@@ -1,0 +1,77 @@
+---
+Title: "CS5100 Assignment 1"
+---
+Task 1:
+
+```{r}
+source('GD.R')
+```
+
+Task 2:
+
+```{r}
+Auto = read.table("Auto.data" , header = T, na.strings = "?")
+#attach(Auto)
+High = ifelse(mpg <= 22, 0, 1)
+Auto = data.frame(Auto,High)
+origin = as.factor(origin)
+Auto = na.omit(Auto)
+Auto[,c(1:7)] = scale(Auto[,-c(8,9,10)])
+
+```
+
+Task 3:
+
+```{r}
+set.seed(2605)
+train = sample(1:nrow(Auto), nrow(Auto)/2)
+Auto.train = Auto[train,]
+Auto.test = Auto[-train,]
+```
+
+Task 4:
+
+```{r}
+x_train = as.matrix(Auto.train[,c("horsepower","weight","year","origin")])
+y_train = as.matrix(Auto.train[,c("High")])
+W_coefficients = logistic_regression_fit(x_train,y_train,.001,10**2)
+print("coefficients"); print(W_coefficients)
+
+#Test MSE
+x_test = as.matrix(Auto.test[,c("horsepower","weight","year","origin")])
+y_test = as.matrix(Auto.test[,c("High")])
+y_pred = logistic_regression_predict(x_test,W_coefficients)
+mse_result = get_mse_result(y_pred,y_test)
+print("Test MSE RESULT");print(mse_result)
+
+#Training MSE
+y_train_pred = logistic_regression_predict(x_train,W_coefficients)
+mse_result_train = get_mse_result(y_train_pred,y_train)
+print("Training MSE RESULT");print(mse_result_train)
+```
+
+Task 5:
+
+```{r}
+source('GD5.R')
+W_coefficients_gd5 = logistic_regression_fit_gd5(x_train,y_train)
+print("coefficients gd5"); print(W_coefficients_gd5)
+```
+
+
+Task 6:
+
+```{r}
+source('GD6.R')
+repeat_gd6_plot(X_train, y_train, x_test, y_test)
+
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
